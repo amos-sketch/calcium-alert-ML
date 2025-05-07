@@ -1,0 +1,48 @@
+""import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from imblearn.over_sampling import SMOTE
+
+# Load the dataset
+# Replace 'your_data.csv' with the actual dataset path
+data = pd.read_csv('your_data.csv')
+
+# Basic EDA
+print(f"Dataset Shape: {data.shape}")
+print("Column Info:")
+print(data.info())
+print("Missing Values:")
+print(data.isnull().sum())
+print("Descriptive Stats:")
+print(data.describe())
+
+# Handle Missing Values
+imputer = SimpleImputer(strategy='mean')
+numerical_cols = data.select_dtypes(include=['float64', 'int64']).columns
+data[numerical_cols] = imputer.fit_transform(data[numerical_cols])
+
+# Categorical Encoding (if any)
+categorical_cols = data.select_dtypes(include=['object']).columns
+for col in categorical_cols:
+    le = LabelEncoder()
+    data[col] = le.fit_transform(data[col].astype(str))
+
+# Feature Scaling
+scaler = StandardScaler()
+data[numerical_cols] = scaler.fit_transform(data[numerical_cols])
+
+# Splitting Data
+X = data.drop('target', axis=1)  # Replace 'target' with actual target column
+y = data['target']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Handling Class Imbalance
+smote = SMOTE(random_state=42)
+X_train, y_train = smote.fit_resample(X_train, y_train)
+
+print(f"Training Set Shape after SMOTE: {X_train.shape}")
+print(f"Test Set Shape: {X_test.shape}")
+
+# Final datasets ready for modeling
+print("Data Preprocessing Complete. Ready for Model Building.")""
